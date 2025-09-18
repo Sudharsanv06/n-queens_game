@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220">
+  <defs>
+    <linearGradient id="grad6x6" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f093fb"/>
+      <stop offset="100%" style="stop-color:#f5576c"/>
+    </linearGradient>
+    <pattern id="chess6x6" patternUnits="userSpaceOnUse" width="40" height="40">
+      <rect width="20" height="20" fill="rgba(255,255,255,0.15)"/>
+      <rect x="20" y="20" width="20" height="20" fill="rgba(255,255,255,0.15)"/>
+      <rect x="20" y="0" width="20" height="20" fill="rgba(0,0,0,0.1)"/>
+      <rect x="0" y="20" width="20" height="20" fill="rgba(0,0,0,0.1)"/>
+    </pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#grad6x6)"/>
+  <rect width="100%" height="100%" fill="url(#chess6x6)"/>
+  <g transform="translate(200,110)">
+    <circle r="55" fill="rgba(255,255,255,0.9)" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+    <text text-anchor="middle" dy="8" fill="#333" font-size="30" font-weight="bold">♛</text>
+  </g>
+  <g transform="translate(100,50)">
+    <circle r="12" fill="rgba(255,255,255,0.7)"/>
+    <text text-anchor="middle" dy="5" fill="#333" font-size="14">♛</text>
+  </g>
+  <g transform="translate(300,170)">
+    <circle r="12" fill="rgba(255,255,255,0.7)"/>
+    <text text-anchor="middle" dy="5" fill="#333" font-size="14">♛</text>
+  </g>
+  <g transform="translate(60,140)">
+    <circle r="12" fill="rgba(255,255,255,0.7)"/>
+    <text text-anchor="middle" dy="5" fill="#333" font-size="14">♛</text>
+  </g>
+</svg>

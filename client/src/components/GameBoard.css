@@ -1,0 +1,320 @@
+.game-board-page {
+  min-height: 100vh;
+  background: #f8f8f8;
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.game-container {
+  max-width: 800px;
+  width: 100%;
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.game-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.game-header h1 {
+  font-size: 2.5rem;
+  color: #4a6a3a;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+}
+
+.game-info {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.info-item .label {
+  font-size: 0.9rem;
+  color: #666;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-item .value {
+  font-size: 1.2rem;
+  color: #333;
+  font-weight: 700;
+}
+
+.board-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.chess-board {
+  display: grid;
+  border: 3px solid #8B4513;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  max-width: 500px;
+  max-height: 500px;
+  aspect-ratio: 1;
+}
+
+.chess-square {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  min-height: 40px;
+  min-width: 40px;
+}
+
+.chess-square.light {
+  background: #f0d9b5;
+}
+
+.chess-square.dark {
+  background: #b58863;
+}
+
+.chess-square:hover {
+  transform: scale(1.05);
+  box-shadow: inset 0 0 0 2px #6b8e23;
+}
+
+.chess-square.has-queen {
+  background: #4a6a3a !important;
+}
+
+.chess-square.has-queen:hover {
+  background: #3a5a2a !important;
+}
+
+.queen {
+  font-size: 2rem;
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  animation: queenPlace 0.3s ease-out;
+}
+
+@keyframes queenPlace {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.game-instructions {
+  text-align: center;
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.game-instructions p {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+}
+
+.game-result-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.result-modal {
+  background: white;
+  border-radius: 12px;
+  padding: 3rem;
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: modalAppear 0.3s ease-out;
+}
+
+@keyframes modalAppear {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.result-header h2 {
+  font-size: 2rem;
+  color: #4a6a3a;
+  margin-bottom: 2rem;
+  font-weight: 700;
+}
+
+.result-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: #f8f8f8;
+  border-radius: 8px;
+}
+
+.stat-label {
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  font-weight: 700;
+  color: #333;
+  font-size: 1.1rem;
+}
+
+.result-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.play-again-btn {
+  background: #6b8e23;
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  min-width: 200px;
+}
+
+.play-again-btn:hover {
+  background: #5a7a1a;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(107, 142, 35, 0.3);
+}
+
+.home-btn {
+  background: transparent;
+  color: #666;
+  border: 2px solid #666;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  min-width: 150px;
+}
+
+.home-btn:hover {
+  background: #666;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 102, 102, 0.3);
+}
+
+@media (max-width: 768px) {
+  .game-board-page {
+    padding: 1rem;
+  }
+  
+  .game-container {
+    padding: 1.5rem;
+  }
+  
+  .game-header h1 {
+    font-size: 2rem;
+  }
+  
+  .game-info {
+    gap: 1rem;
+  }
+  
+  .chess-board {
+    max-width: 350px;
+    max-height: 350px;
+  }
+  
+  .queen {
+    font-size: 1.5rem;
+  }
+  
+  .result-modal {
+    padding: 2rem;
+  }
+  
+  .result-header h2 {
+    font-size: 1.5rem;
+  }
+  
+  .result-actions {
+    flex-direction: column;
+  }
+  
+  .play-again-btn,
+  .home-btn {
+    width: 100%;
+    min-width: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .chess-board {
+    max-width: 280px;
+    max-height: 280px;
+  }
+  
+  .queen {
+    font-size: 1.2rem;
+  }
+  
+  .chess-square {
+    min-height: 30px;
+    min-width: 30px;
+  }
+}

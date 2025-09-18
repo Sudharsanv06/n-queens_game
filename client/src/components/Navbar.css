@@ -1,0 +1,271 @@
+.navbar {
+  background: #1a1a1a;
+  padding: 1.2rem 0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 1px solid #333333;
+}
+
+
+
+.navbar-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar-brand .navbar-logo {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 1.8rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.navbar-brand .navbar-logo::after {
+  content: '♛';
+  margin-left: 8px;
+  font-size: 1.2em;
+  color: #ffffff;
+}
+
+.navbar-brand .navbar-logo:hover {
+  color: #cccccc;
+  transform: scale(1.05);
+}
+
+.navbar-menu {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.navbar-link {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 0.7rem 1.2rem;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+  position: relative;
+  text-transform: capitalize;
+  letter-spacing: 1px;
+}
+
+.navbar-link:hover {
+  color: #cccccc;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.navbar-link.active {
+  background: #d3d3d3;
+  color: #000000;
+  font-weight: 700;
+}
+
+.navbar-auth {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.navbar-btn {
+  padding: 0.7rem 1.2rem;
+  border-radius: 20px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  text-transform: capitalize;
+  letter-spacing: 1px;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 80px;
+  text-align: center;
+}
+
+.login-btn {
+  color: #ffffff;
+  background: transparent;
+  border-color: #ffffff;
+}
+
+.login-btn:hover {
+  color: #000000;
+  background: #ffffff;
+}
+
+.signup-btn {
+  color: #000000;
+  background: #6b8e23;
+  border-color: #6b8e23;
+}
+
+.signup-btn:hover {
+  background: #5a7a1a;
+  color: #ffffff;
+}
+
+/* User Section Styles */
+.user-section {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 0.7rem 1.2rem;
+  border-radius: 25px;
+  backdrop-filter: blur(5px);
+  border: 1px solid #ffffff;
+}
+
+.user-section .username {
+  font-weight: 600;
+  color: #ffffff;
+  font-size: 1rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  position: relative;
+  white-space: nowrap;
+}
+
+.user-section .username::before {
+  content: '👑';
+  margin-right: 8px;
+}
+
+.user-section .logout-btn {
+  background: linear-gradient(135deg, #ffffff, #cccccc);
+  color: #000000;
+  padding: 0.7rem 1.3rem;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.85rem;
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15);
+  min-width: 80px;
+}
+
+.user-section .logout-btn:hover {
+  background: linear-gradient(135deg, #cccccc, #ffffff);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.user-section .logout-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.15);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .navbar-container {
+    padding: 0 1.5rem;
+  }
+  .navbar-menu {
+    gap: 0.5rem;
+    padding: 0.4rem 0.8rem;
+  }
+  .navbar-link {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+  .navbar-btn {
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+    min-width: 70px;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar-container {
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 0 1rem;
+  }
+  .navbar-brand .navbar-logo {
+    font-size: 1.6rem;
+  }
+  .navbar-menu {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+  .navbar-link {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+  .navbar-btn {
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+    min-width: 70px;
+  }
+  .user-section {
+    gap: 1rem;
+    padding: 0.6rem 1rem;
+    order: 2;
+  }
+  .user-section .username {
+    font-size: 0.95rem;
+  }
+  .user-section .logout-btn {
+    padding: 0.6rem 1rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    padding: 1rem 0;
+  }
+  .navbar-container {
+    gap: 1rem;
+    flex-direction: column;
+  }
+  .navbar-brand .navbar-logo {
+    font-size: 1.4rem;
+  }
+  .navbar-menu {
+    width: 100%;
+    justify-content: center;
+    order: 3;
+  }
+  .navbar-link {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.85rem;
+  }
+  .navbar-btn {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.8rem;
+    min-width: 60px;
+  }
+  .user-section {
+    width: 100%;
+    justify-content: center;
+    flex-direction: column;
+    gap: 0.8rem;
+    text-align: center;
+    padding: 1rem;
+    order: 2;
+  }
+  .user-section .logout-btn {
+    width: 100%;
+    max-width: 200px;
+  }
+}
