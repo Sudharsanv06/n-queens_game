@@ -12,8 +12,18 @@ import { Server as SocketIOServer } from 'socket.io'
 dotenv.config()
 const app = express()
 
+// Support multiple origins via comma-separated CLIENT_ORIGIN
+const allowedOrigins = (process.env.CLIENT_ORIGIN || 'http://localhost:5173,http://localhost:5174')
+  .split(',')
+  .map(o => o.trim())
+
 app.use(cors({
-  origin: process.env.CLIENT_ORIGIN || 'http://localhost:5173',
+  origin: function (origin, callback) {
+    // Allow non-browser clients (e.g., curl/postman) and same-origin
+    if (!origin) return callback(null, true)
+    if (allowedOrigins.includes(origin)) return callback(null, true)
+    return callback(new Error('Not allowed by CORS'))
+  },
   methods: ['GET','POST','PUT','DELETE','OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }))
@@ -30,7 +40,11 @@ const PORT = process.env.PORT || 5000
 const httpServer = createServer(app)
 const io = new SocketIOServer(httpServer, {
   cors: {
-    origin: process.env.CLIENT_ORIGIN || 'http://localhost:5173',
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true)
+      if (allowedOrigins.includes(origin)) return callback(null, true)
+      return callback(new Error('Not allowed by CORS'))
+    },
     methods: ['GET', 'POST']
   }
 })

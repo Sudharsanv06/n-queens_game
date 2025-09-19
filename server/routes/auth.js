@@ -38,7 +38,16 @@ router.post('/signup', async (req, res) => {
     })
   } catch (err) {
     console.error('Signup error:', err)
-    res.status(500).json({ error: 'Signup failed' })
+    // Duplicate key error from Mongo (e.g., email unique)
+    if (err && err.code === 11000) {
+      const field = Object.keys(err.keyPattern || {})[0] || 'field'
+      return res.status(400).json({ message: `${field} already exists` })
+    }
+    // Mongoose validation error
+    if (err && err.name === 'ValidationError') {
+      return res.status(400).json({ message: err.message })
+    }
+    res.status(500).json({ message: 'Signup failed', error: err.message })
   }
 })
 
@@ -66,7 +75,7 @@ router.post('/login', async (req, res) => {
     })
   } catch (err) {
     console.error('Login error:', err)
-    res.status(500).json({ error: 'Login failed' })
+    res.status(500).json({ message: 'Login failed', error: err.message })
   }
 })
 

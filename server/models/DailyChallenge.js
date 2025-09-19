@@ -50,8 +50,6 @@ const dailyChallengeSchema = new mongoose.Schema({
   }
 }, { timestamps: true })
 
-// Index for efficient date queries
-dailyChallengeSchema.index({ date: 1 })
 dailyChallengeSchema.index({ 'completions.userId': 1 })
 
 export default mongoose.model('DailyChallenge', dailyChallengeSchema)

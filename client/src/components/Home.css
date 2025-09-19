@@ -144,6 +144,47 @@
   border-color: #7a8f5f;
 }
 
+.hero-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 150%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent 20%, rgba(255,255,255,0.35) 50%, transparent 80%);
+  transform: skewX(-20deg);
+  transition: opacity 0.3s ease;
+  opacity: 0;
+}
+
+.hero-btn:hover::before {
+  animation: shimmer 1.2s forwards;
+  opacity: 1;
+}
+
+@keyframes shimmer {
+  0% { left: -150%; }
+  100% { left: 150%; }
+}
+
+.hero-section::after {
+  content: '';
+  position: absolute;
+  right: -15%;
+  bottom: -15%;
+  width: 520px;
+  height: 520px;
+  background: radial-gradient(circle, rgba(129,199,132,0.18) 0%, rgba(129,199,132,0) 60%);
+  filter: blur(8px);
+  animation: pulseGlow 8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.08); opacity: 0.6; }
+}
+
 /* --- Chess Board --- */
 .hero-visual {
   flex: 1;

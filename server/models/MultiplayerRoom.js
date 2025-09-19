@@ -76,7 +76,6 @@ const multiplayerRoomSchema = new mongoose.Schema({
 }, { timestamps: true })
 
 // Indexes for efficient queries
-multiplayerRoomSchema.index({ roomId: 1 })
 multiplayerRoomSchema.index({ gameState: 1 })
 multiplayerRoomSchema.index({ 'players.userId': 1 })
 
