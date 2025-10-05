@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { OfflineAuth } from '../utils/offlineAuth';
 import './Navbar.css';
 
 const Navbar = () => {
@@ -10,8 +11,9 @@ const Navbar = () => {
   // Check user status on load and when storage changes
   useEffect(() => {
     const checkUser = () => {
-      const userData = localStorage.getItem('user');
-      setUser(userData ? JSON.parse(userData) : null);
+      // Use OfflineAuth to get current user consistently
+      const userData = OfflineAuth.getCurrentUser();
+      setUser(userData);
     };
 
     // Initial check
@@ -26,7 +28,8 @@ const Navbar = () => {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('user');
+    // Use OfflineAuth logout method for consistency
+    OfflineAuth.logout();
     setUser(null);
     // Notify other tabs
     window.dispatchEvent(new Event('storage'));

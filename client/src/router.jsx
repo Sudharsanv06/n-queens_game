@@ -10,6 +10,8 @@ import Board from './components/Board';
 import GameBoard from './components/GameBoard';
 import GameModeSelection from './components/GameModeSelection';
 import RegisteredGameModes from './components/RegisteredGameModes';
+import ClassicMode from './components/ClassicMode';
+import TimeTrialMode from './components/TimeTrialMode';
 import Leaderboard from './components/Leaderboard';
 import Tutorial from './components/Tutorial';
 
@@ -27,6 +29,8 @@ const Router = () => {
       {/* Game routes */}
       <Route path="/game-mode-selection" element={<GameModeSelection />} />
       <Route path="/registered-game-modes" element={<RegisteredGameModes />} />
+      <Route path="/classic-mode" element={<ClassicMode />} />
+      <Route path="/time-trial-mode" element={<TimeTrialMode />} />
       <Route path="/game/free-trial" element={<GameBoard />} />
       <Route path="/game/classic" element={<GameBoard />} />
       <Route path="/game/time-trial" element={<GameBoard />} />

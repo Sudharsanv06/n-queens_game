@@ -1,0 +1,54 @@
+{
+  "name": "n-queens-game-mobile",
+  "version": "1.0.0",
+  "description": "Complete N-Queens Strategy Game for Mobile and Web",
+  "scripts": {
+    "dev": "npm run dev:server & npm run dev:client",
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm run dev",
+    "build": "npm run build:client && npm run build:mobile",
+    "build:client": "cd client && npm run build",
+    "build:mobile": "cd client && npm run build && npx cap sync",
+    "start": "cd server && npm start",
+    "test": "npm run test:server && npm run test:client",
+    "test:server": "cd server && npm test",
+    "test:client": "cd client && npm test",
+    "deploy:heroku": "git subtree push --prefix server heroku main",
+    "deploy:vercel": "cd client && vercel --prod",
+    "deploy:netlify": "cd client && netlify deploy --prod --dir dist",
+    "mobile:android": "cd client && npm run build && npx cap sync android && npx cap open android",
+    "mobile:ios": "cd client && npm run build && npx cap sync ios && npx cap open ios",
+    "mobile:sync": "cd client && npx cap sync",
+    "install:all": "npm install && cd server && npm install && cd ../client && npm install",
+    "clean": "rm -rf node_modules server/node_modules client/node_modules client/dist",
+    "postinstall": "npm run install:all"
+  },
+  "keywords": [
+    "n-queens",
+    "chess",
+    "puzzle",
+    "strategy",
+    "mobile",
+    "game",
+    "react",
+    "nodejs",
+    "multiplayer"
+  ],
+  "author": "N-Queens Game Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/n-queens-game.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/n-queens-game/issues"
+  },
+  "homepage": "https://github.com/yourusername/n-queens-game#readme",
+  "dependencies": {
+    "express-rate-limit": "^8.1.0"
+  }
+}

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
+import { Capacitor } from '@capacitor/core';
+import { OfflineAuth } from '../utils/offlineAuth';
 import Layout from './Layout';
 import './Login.css';
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
@@ -25,17 +27,54 @@ const Login = () => {
     setError('');
     
     try {
-      const response = await axios.post(`${API_BASE_URL}/auth/login`, form);
+      let response;
       
-      // Store token and user data in localStorage for session management
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
-      axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+      // Use offline authentication if on mobile or offline
+      if (Capacitor.isNativePlatform() || !navigator.onLine) {
+        response = await OfflineAuth.login(form);
+        console.log('Offline login successful:', response);
+      } else {
+        // Try online authentication first
+        try {
+          const axiosResponse = await axios.post(`${API_BASE_URL}/auth/login`, form);
+          response = axiosResponse.data;
+          
+          // For online login, also store in OfflineAuth format for consistency
+          if (response.success) {
+            // Create a session using OfflineAuth format
+            localStorage.setItem('nqueens_current_user', JSON.stringify(response.user));
+            const session = {
+              userId: response.user.id || response.user._id,
+              token: response.token,
+              createdAt: new Date().toISOString(),
+              expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+            };
+            localStorage.setItem('nqueens_session', JSON.stringify(session));
+            console.log('Online login successful:', response);
+          }
+        } catch (networkError) {
+          console.log('Network error, falling back to offline auth:', networkError.message);
+          
+          // Check if it's a validation error from server
+          if (networkError.response && networkError.response.data && networkError.response.data.message) {
+            throw new Error(networkError.response.data.message);
+          }
+          
+          // Fall back to offline authentication
+          response = await OfflineAuth.login(form);
+          console.log('Offline fallback login successful:', response);
+        }
+      }
       
-      alert('Login successful!');
+      // Trigger a storage event to update other components
+      window.dispatchEvent(new Event('storage'));
+      
+      console.log('Login completed successfully');
+      alert('Login successful! Welcome back!');
       navigate('/');
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed. Please try again.');
+      console.error('Login error:', err);
+      setError(err.message || err.response?.data?.message || 'Login failed. Please try again.');
     } finally {
       setLoading(false);
     }

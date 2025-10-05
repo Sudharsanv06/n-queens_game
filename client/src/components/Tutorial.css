@@ -2,26 +2,30 @@
   padding: 2rem;
   max-width: 1200px;
   margin: 0 auto;
-  color: #333;
+  color: #1f2937;
+  background: linear-gradient(135deg, #f0f8f0 0%, #e8f5e8 100%);
+  min-height: 100vh;
 }
 
 .tutorial-hero {
   text-align: center;
-  margin-bottom: 3rem;
-  padding: 2rem 0;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  border-radius: 10px;
+  margin-bottom: 4rem;
+  padding: 3rem 2rem;
+  background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
+  border-radius: 20px;
+  color: white;
 }
 
 .tutorial-hero h1 {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-  color: #2c3e50;
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+  color: white;
+  font-weight: 800;
 }
 
 .tutorial-hero p {
-  font-size: 1.2rem;
-  color: #7f8c8d;
+  font-size: 1.3rem;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 /* Video Tutorials Section */
@@ -31,9 +35,10 @@
 
 .video-tutorials h2 {
   text-align: center;
-  margin-bottom: 2rem;
-  font-size: 2rem;
-  color: #2c3e50;
+  margin-bottom: 2.5rem;
+  font-size: 2.4rem;
+  color: #16a34a;
+  font-weight: 700;
 }
 
 .video-grid {
@@ -44,14 +49,16 @@
 
 .video-card {
   background: white;
-  border-radius: 8px;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
+  box-shadow: 0 6px 25px rgba(22, 163, 74, 0.12);
+  border: 2px solid #d1fae5;
+  transition: all 0.3s ease;
 }
 
 .video-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-8px);
+  box-shadow: 0 12px 40px rgba(22, 163, 74, 0.2);
 }
 
 .video-container {

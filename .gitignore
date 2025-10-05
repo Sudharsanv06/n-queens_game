@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+*/node_modules/
+client/node_modules/
+server/node_modules/
+
+# Build outputs
+client/dist/
+client/android/build/
+client/ios/build/
+*.log
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Capacitor
+client/android/app/build/
+client/android/.gradle/
+client/android/build/
+client/ios/App/build/
+
+# Vite
+client/node_modules/.vite/
+
+# Temporary files
+*.tmp
+*.temp

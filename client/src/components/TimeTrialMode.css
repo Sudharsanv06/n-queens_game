@@ -1,0 +1,99 @@
+/* TimeTrialMode.css - Specific animations for time trial */
+
+/* Time Trial Specific Animations */
+.time-trial-pulse {
+  animation: timePulse 2s ease-in-out infinite;
+}
+
+@keyframes timePulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.02);
+  }
+}
+
+/* Countdown Timer Styles */
+.countdown-display {
+  background: linear-gradient(135deg, #f43f5e, #e11d48);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: bold;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(244, 63, 94, 0.4);
+}
+
+.countdown-critical {
+  animation: criticalPulse 0.5s ease-in-out infinite;
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+}
+
+@keyframes criticalPulse {
+  0%, 100% {
+    box-shadow: 0 4px 15px rgba(220, 38, 38, 0.6);
+  }
+  50% {
+    box-shadow: 0 8px 25px rgba(220, 38, 38, 0.9);
+  }
+}
+
+/* Time Bonus Indicators */
+.time-bonus {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Time Trial Card Special Effects */
+.time-trial-card {
+  position: relative;
+}
+
+.time-trial-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, 
+    transparent 40%, 
+    rgba(59, 130, 246, 0.1) 50%, 
+    transparent 60%);
+  animation: timeWave 2s ease-in-out infinite;
+  pointer-events: none;
+  border-radius: 16px;
+}
+
+@keyframes timeWave {
+  0%, 100% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  50% {
+    transform: translateX(100%);
+    opacity: 1;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .countdown-display {
+    padding: 6px 12px;
+    font-size: 14px;
+  }
+  
+  .time-trial-pulse {
+    animation: none;
+  }
+}

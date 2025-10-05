@@ -1,11 +1,30 @@
 import mongoose from 'mongoose'
 
 const userSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
+  name: { 
+    type: String, 
+    required: [true, 'Name is required'],
+    trim: true,
+    minlength: [2, 'Name must be at least 2 characters long'],
+    maxlength: [50, 'Name must be less than 50 characters']
+  },
+  email: { 
+    type: String, 
+    required: [true, 'Email is required'], 
+    unique: true,
+    lowercase: true,
+    trim: true,
+    validate: {
+      validator: function(v) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+      },
+      message: 'Please enter a valid email address'
+    }
+  },
   mobile: { 
     type: String, 
-    required: true,
+    required: [true, 'Mobile number is required'],
+    unique: true,
     validate: {
       validator: function(v) {
         return /^\d{10}$/.test(v);
@@ -13,7 +32,11 @@ const userSchema = new mongoose.Schema({
       message: 'Mobile number must be exactly 10 digits'
     }
   },
-  password: { type: String, required: true },
+  password: { 
+    type: String, 
+    required: [true, 'Password is required'],
+    minlength: [6, 'Password must be at least 6 characters long']
+  },
   
   // Game Statistics
   stats: {
@@ -78,5 +101,10 @@ userSchema.methods.addExperience = function(points) {
     // Could trigger achievement unlock here
   }
 }
+
+// Create indexes for better performance (email and mobile are automatically indexed due to unique: true)
+userSchema.index({ 'stats.totalScore': -1 })
+userSchema.index({ level: -1 })
+userSchema.index({ createdAt: -1 })
 
 export default mongoose.model('User', userSchema)

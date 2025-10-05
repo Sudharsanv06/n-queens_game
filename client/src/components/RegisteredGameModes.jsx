@@ -87,28 +87,23 @@ const RegisteredGameModes = () => {
 
   const handleStartMode = () => {
     if (selectedMode) {
-      const mode = gameModes.find(m => m.id === selectedMode);
-      let timeLimit = null;
-      
-      // Set time limits for different modes
+      // Navigate to dedicated mode pages for classic and time-trial
       switch (selectedMode) {
+        case 'classic':
+          navigate('/classic-mode');
+          break;
         case 'time-trial':
-          timeLimit = 300; // 5 minutes
+          navigate('/time-trial-mode');
           break;
         case 'puzzle-mode':
-          timeLimit = 600; // 10 minutes
+          navigate(`/game/${selectedMode}?timeLimit=600`);
           break;
         case 'multiplayer':
-          timeLimit = 180; // 3 minutes
+          navigate(`/game/${selectedMode}?timeLimit=180`);
           break;
         default:
-          timeLimit = null; // No time limit for classic
+          navigate(`/game/${selectedMode}`);
       }
-      
-      const url = timeLimit 
-        ? `/game/${selectedMode}?timeLimit=${timeLimit}`
-        : `/game/${selectedMode}`;
-      navigate(url);
     }
   };
 

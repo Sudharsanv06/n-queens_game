@@ -1,13 +1,13 @@
 /* Leaderboard Container */
 .leaderboard-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f8f9f5 0%, #e8f5e8 100%);
-  color: #2d4a2d;
+  background: linear-gradient(135deg, #f0f8f0 0%, #e8f5e8 50%, #d4f4d4 100%);
+  color: #1f2937;
 }
 
 .hero-section {
-  background: linear-gradient(135deg, #2d4a2d 0%, #4a6b4a 100%);
-  padding: 3rem 2rem 2.5rem;
+  background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
+  padding: 4rem 2rem 3rem;
   text-align: center;
   color: white;
 }
@@ -58,24 +58,24 @@
 
 .category-selector label {
   font-weight: 600;
-  color: #2d4a2d;
-  font-size: 1rem;
+  color: #16a34a;
+  font-size: 1.1rem;
 }
 
 .category-selector select {
-  padding: 10px 15px;
-  border: 2px solid #d4e2d4;
-  border-radius: 8px;
+  padding: 12px 18px;
+  border: 2px solid #d1fae5;
+  border-radius: 12px;
   background: white;
   font-size: 1rem;
-  color: #2d4a2d;
+  color: #374151;
   cursor: pointer;
   transition: all 0.3s ease;
-  min-width: 200px;
+  min-width: 220px;
 }
 
 .category-selector select:hover {
-  border-color: #8b9f6f;
+  border-color: #16a34a;
 }
 
 .category-selector select:focus {
@@ -172,6 +172,11 @@
 
 .top-player {
   background-color: #f5f7f2;
+}
+
+.current-user {
+  background-color: rgba(130, 150, 111, 0.1) !important;
+  border-left: 4px solid #82966f;
 }
 
 .rank {

@@ -1,0 +1,29 @@
+/* ClassicMode.css - Minimal additions to complement existing styles */
+
+/* Level card specific animations */
+.level-card-animation {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.level-card-animation:hover {
+  transform: translateY(-4px) scale(1.02);
+}
+
+/* Level specific styling */
+.level-progress-indicator {
+  background: linear-gradient(90deg, #10b981, #3b82f6);
+  height: 4px;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .level-card-animation {
+    transform: none;
+  }
+  
+  .level-card-animation:hover {
+    transform: translateY(-2px);
+  }
+}

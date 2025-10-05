@@ -1,13 +1,13 @@
 .about-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f8f9f5 0%, #e8f5e8 100%);
+  background: linear-gradient(135deg, #f0f8f0 0%, #e8f5e8 50%, #d4f4d4 100%);
   padding: 0;
 }
 
 .hero-section {
-  background: linear-gradient(135deg, #2d4a2d 0%, #4a6b4a 100%);
+  background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
   color: white;
-  padding: 3rem 2rem 2.5rem;
+  padding: 4rem 2rem 3rem;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -53,18 +53,18 @@
 }
 
 .about-section {
-  margin-bottom: 2rem;
-  padding: 2rem;
+  margin-bottom: 2.5rem;
+  padding: 2.5rem;
   background: white;
-  border-radius: 16px;
-  box-shadow: 0 4px 24px rgba(139, 159, 111, 0.1);
-  border: 1px solid #d4e2d4;
+  border-radius: 20px;
+  box-shadow: 0 6px 30px rgba(22, 163, 74, 0.12);
+  border: 2px solid #d1fae5;
   transition: all 0.3s ease;
 }
 
 .about-section:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 32px rgba(139, 159, 111, 0.15);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 40px rgba(22, 163, 74, 0.18);
 }
 
 .about-section:last-child {
@@ -72,9 +72,9 @@
 }
 
 .about-section h2 {
-  color: #2d4a2d;
-  margin-bottom: 1.5rem;
-  font-size: 1.8rem;
+  color: #16a34a;
+  margin-bottom: 1.8rem;
+  font-size: 2rem;
   font-weight: 800;
   position: relative;
   padding-left: 0;
@@ -84,11 +84,11 @@
 .about-section h2::after {
   content: '';
   position: absolute;
-  bottom: -10px;
+  bottom: -12px;
   left: 0;
-  width: 60px;
+  width: 70px;
   height: 4px;
-  background: linear-gradient(135deg, #8b9f6f 0%, #7a8f5f 100%);
+  background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
   border-radius: 2px;
 }
 

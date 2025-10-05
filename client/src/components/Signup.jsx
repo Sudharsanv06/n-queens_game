@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
+import { Capacitor } from '@capacitor/core';
+import { OfflineAuth } from '../utils/offlineAuth';
 import Layout from './Layout';
 import './Signup.css';
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
@@ -71,15 +73,51 @@ const Signup = () => {
     setLoading(true);
     setError('');    
     try {
-      const response = await axios.post(`${API_BASE_URL}/auth/signup`, form);
-      // Persist token and user; auto-login after signup
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
-      axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
-      alert('Account created successfully!');
-      navigate('/');
+      let response;
+      
+      // Use offline authentication if on mobile or offline
+      if (Capacitor.isNativePlatform() || !navigator.onLine) {
+        response = await OfflineAuth.register(form);
+        // The offline auth already handles localStorage storage
+        // Just trigger a storage event to update other components
+        window.dispatchEvent(new Event('storage'));
+      } else {
+        // Try online authentication first
+        try {
+          const axiosResponse = await axios.post(`${API_BASE_URL}/auth/signup`, {
+            name: form.name,
+            email: form.email,
+            mobile: form.mobile,
+            password: form.password
+          });
+          response = axiosResponse.data;
+          
+          // For online signup, don't store auth data since user needs to login
+          console.log('Online signup successful:', response.message);
+        } catch (networkError) {
+          console.log('Network error, falling back to offline registration:', networkError.message);
+          
+          // Check if it's a validation error from server
+          if (networkError.response && networkError.response.data && networkError.response.data.message) {
+            throw new Error(networkError.response.data.message);
+          }
+          
+          // Fall back to offline registration
+          response = await OfflineAuth.register(form);
+          window.dispatchEvent(new Event('storage'));
+        }
+      }
+      
+      console.log('Signup successful, user data:', response);
+      
+      // Show appropriate success message
+      const successMessage = response.message || 'Account created successfully! Please log in to continue.';
+      alert(successMessage);
+      
+      // Always redirect to login page after signup
+      navigate('/login');
     } catch (err) {
-      setError(err.response?.data?.message || 'Signup failed. Please try again.');
+      setError(err.message || 'Signup failed. Please try again.');
     } finally {
       setLoading(false);
     }

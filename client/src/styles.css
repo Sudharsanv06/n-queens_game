@@ -1,9 +1,9 @@
 /* styles.css */
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
   padding: 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #f0f8f0 0%, #e8f5e8 50%, #d4f4d4 100%);
   min-height: 100vh;
 }
 
@@ -48,9 +48,9 @@ body {
 
 .leaderboard-header h1 {
   font-size: 3rem;
-  color: #333;
+  color: #16a34a;
   margin-bottom: 1rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -88,8 +88,8 @@ body {
 
 .category-selector select:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+  border-color: #16a34a;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
 }
 
 .loading {
@@ -141,7 +141,7 @@ body {
   grid-template-columns: 80px 2fr 1fr 1fr 1fr 1fr;
   gap: 1rem;
   padding: 1.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
   color: white;
   font-weight: bold;
   font-size: 1.1rem;

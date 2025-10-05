@@ -1,0 +1,674 @@
+/* Multiplayer Game Styles */
+.multiplayer-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  text-align: center;
+  color: #64748b;
+}
+
+.multiplayer-loading svg {
+  color: #ef4444;
+  margin-bottom: 1rem;
+}
+
+.multiplayer-loading h2 {
+  margin: 1rem 0 0.5rem 0;
+  color: #1e293b;
+}
+
+/* Lobby Styles */
+.multiplayer-lobby {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.lobby-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.lobby-header h1 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.header-icon {
+  color: #3b82f6;
+}
+
+.connection-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: #10b981;
+  font-weight: 600;
+}
+
+.wifi-icon {
+  color: #10b981;
+}
+
+.game-settings {
+  background: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+  border: 1px solid #e5e7eb;
+}
+
+.game-settings h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #1e293b;
+}
+
+.setting-group {
+  margin-bottom: 1.5rem;
+}
+
+.setting-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.setting-group select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.setting-group select:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+.lobby-actions {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.join-random-btn,
+.create-room-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 0.75rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.join-random-btn {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+}
+
+.create-room-btn {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  color: white;
+}
+
+.join-random-btn:hover,
+.create-room-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.private-room-input {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.private-room-input input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+}
+
+.private-room-input button {
+  padding: 0.75rem 1.5rem;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.private-room-input button:hover {
+  background: #2563eb;
+}
+
+.room-info {
+  background: #f8fafc;
+  border-radius: 1rem;
+  padding: 2rem;
+  text-align: center;
+  border: 2px solid #e5e7eb;
+}
+
+.room-info h3 {
+  color: #1e293b;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.players-list {
+  margin: 1.5rem 0;
+}
+
+.player {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  margin: 0.5rem 0;
+  background: white;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+}
+
+.player.you {
+  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+  border-color: #3b82f6;
+}
+
+.ready {
+  color: #10b981;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+/* Game Styles */
+.multiplayer-game {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  color: white;
+  display: flex;
+  flex-direction: column;
+}
+
+.game-header-multi {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.header-left h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.game-timer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #60a5fa;
+  font-size: 1rem;
+  margin-top: 0.25rem;
+}
+
+.header-right {
+  display: flex;
+  gap: 1rem;
+}
+
+.sound-toggle,
+.chat-toggle {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  position: relative;
+}
+
+.sound-toggle:hover,
+.chat-toggle:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.chat-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: #ef4444;
+  color: white;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.game-content {
+  flex: 1;
+  display: flex;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.players-panel {
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.player-card {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  border: 2px solid transparent;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.player-card.winner {
+  border-color: #fbbf24;
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(245, 158, 11, 0.1));
+}
+
+.player-name {
+  font-weight: 600;
+  font-size: 1.1rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.player-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  color: #cbd5e1;
+  font-size: 0.875rem;
+}
+
+.winner-trophy {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  color: #fbbf24;
+  animation: bounce 1s infinite;
+}
+
+.board-section {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chess-board-multi {
+  display: grid;
+  gap: 2px;
+  background: #1f2937;
+  border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  max-width: 600px;
+  width: 100%;
+  aspect-ratio: 1;
+}
+
+.chess-square-multi {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 0.25rem;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.chess-square-multi.light {
+  background: #f3f4f6;
+}
+
+.chess-square-multi.dark {
+  background: #6b7280;
+}
+
+.chess-square-multi:hover {
+  transform: scale(1.05);
+  z-index: 1;
+}
+
+.chess-square-multi.has-queen.light {
+  background: linear-gradient(135deg, #fef3c7, #fbbf24);
+}
+
+.chess-square-multi.has-queen.dark {
+  background: linear-gradient(135deg, #92400e, #d97706);
+}
+
+.queen-multi {
+  font-size: 2rem;
+  color: #1f2937;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Chat Panel */
+.chat-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: 350px;
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(10px);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+}
+
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.chat-header h3 {
+  margin: 0;
+  color: white;
+}
+
+.chat-header button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.chat-message {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.chat-message.own {
+  align-items: flex-end;
+}
+
+.sender {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.message {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  max-width: 80%;
+  word-wrap: break-word;
+}
+
+.chat-message.own .message {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: white;
+}
+
+.chat-input {
+  display: flex;
+  padding: 1rem 1.5rem;
+  gap: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.chat-input input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  color: white;
+  font-size: 0.875rem;
+}
+
+.chat-input input::placeholder {
+  color: #94a3b8;
+}
+
+.chat-input input:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+.chat-input button {
+  background: #3b82f6;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.chat-input button:hover {
+  background: #2563eb;
+}
+
+/* Result Modal */
+.result-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.result-modal-multi {
+  background: linear-gradient(135deg, #1f2937, #111827);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  width: 90%;
+  max-width: 500px;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.result-header h2 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.result-header p {
+  color: #cbd5e1;
+  margin-bottom: 2rem;
+}
+
+.final-stats {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.final-stats .stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 0.75rem;
+  color: white;
+}
+
+.result-actions {
+  display: grid;
+  gap: 1rem;
+}
+
+.result-actions button {
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 0.75rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.result-actions button:first-child {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+}
+
+.result-actions button:last-child {
+  background: rgba(107, 114, 128, 0.5);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.result-actions button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Animations */
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Mobile Responsive */
+@media (max-width: 1024px) {
+  .game-content {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .players-panel {
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 0.5rem;
+  }
+  
+  .player-card {
+    min-width: 200px;
+    padding: 1rem;
+  }
+  
+  .chat-panel {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .multiplayer-lobby {
+    padding: 1rem;
+  }
+  
+  .game-settings {
+    padding: 1.5rem;
+  }
+  
+  .lobby-header h1 {
+    font-size: 2rem;
+  }
+  
+  .game-header-multi {
+    padding: 1rem;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  
+  .header-left,
+  .header-right {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .chess-board-multi {
+    padding: 0.5rem;
+    gap: 1px;
+  }
+  
+  .queen-multi {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .result-modal-multi {
+    padding: 1.5rem;
+  }
+  
+  .final-stats .stat {
+    padding: 0.75rem;
+    font-size: 0.875rem;
+  }
+  
+  .result-actions button {
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+  }
+}

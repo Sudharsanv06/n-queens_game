@@ -1,110 +1,294 @@
-# Deployment Guide
+# N-Queens Game - Mobile Deployment Guide
 
-This document explains how to deploy the N-Queens Game application.
+## 🚀 Complete Deployment Instructions
 
-- Frontend: React + Vite (Netlify or Vercel)
-- Backend: Node.js + Express (Render)
-- Database: MongoDB Atlas
+### 1. Server Deployment
 
-## Prerequisites
-- Node.js 18+
-- MongoDB Atlas account (or other MongoDB provider)
-- Accounts on Netlify and/or Vercel
-- Render account for backend
+#### Option A: Heroku Deployment
+```bash
+# Install Heroku CLI
+npm install -g heroku
 
-## 1) Configure Environment Variables
+# Login to Heroku
+heroku login
 
-### Backend (Render)
-Create a Web Service in Render from the `server/` folder.
+# Create new Heroku app
+heroku create your-nqueens-app-name
 
-Environment Variables (Render -> Settings -> Environment):
-- MONGO_URI: mongodb+srv://<user>:<pass>@<cluster>/<db>?retryWrites=true&w=majority
-- JWT_SECRET: <generate a strong secret>
-- CLIENT_ORIGIN: https://<your-frontend-domain>
-- PORT: 5000 (Render will set PORT automatically; Express uses it)
+# Set environment variables
+heroku config:set MONGO_URI="mongodb+srv://username:password@cluster.mongodb.net/n-queens-game"
+heroku config:set JWT_SECRET="your-production-jwt-secret"
+heroku config:set NODE_ENV="production"
+heroku config:set CLIENT_ORIGIN="https://your-domain.com,capacitor://localhost"
 
-Start Command:
-```
-node server.js
+# Deploy
+git subtree push --prefix server heroku main
 ```
 
-Build Command:
-- None (leave empty) or `npm install` if Render requests a build step.
+#### Option B: Railway Deployment
+1. Go to railway.app
+2. Connect your GitHub repository
+3. Select the `server` folder as root
+4. Add environment variables from `.env.production`
+5. Deploy automatically
 
-### Frontend (Netlify or Vercel)
+#### Option C: DigitalOcean App Platform
+1. Go to DigitalOcean App Platform
+2. Create new app from GitHub
+3. Set build command: `npm install && npm run build`
+4. Set run command: `npm start`
+5. Add environment variables
 
-In your client project environment variables:
-- VITE_API_URL: https://<your-render-service>.onrender.com/api
-- VITE_SOCKET_URL: https://<your-render-service>.onrender.com
+### 2. Database Setup
 
-Note: Vite injects `VITE_*` variables at build time.
-
-## 2) Deploy Backend (Render)
-1. Push your repository to GitHub/GitLab.
-2. In Render, create a New Web Service -> select the repo.
-3. Set Root Directory to `server/`.
-4. Environment: Node.
-5. Add the environment variables listed above.
-6. Save & Deploy. Wait for build and deployment to complete.
-7. Note the deployed URL, e.g. `https://nqueens-backend.onrender.com`
-
-## 3) Deploy Frontend (choose Netlify or Vercel)
-
-### Option A: Netlify
-1. In Netlify, create a New Site from Git.
-2. Set Base directory: `client/`.
-3. Build command: `npm run build`.
-4. Publish directory: `dist`.
-5. Add Environment variables (Netlify -> Site settings -> Environment):
-   - VITE_API_URL: https://<render-app>/api
-   - VITE_SOCKET_URL: https://<render-app>
-6. Deploy.
-
-Note: SPA Fallback is configured with `client/public/_redirects` which contains:
-```
-/* /index.html 200
+#### MongoDB Atlas (Recommended)
+```bash
+# 1. Go to mongodb.com/atlas
+# 2. Create free cluster
+# 3. Create database user
+# 4. Whitelist IP addresses (0.0.0.0/0 for production)
+# 5. Get connection string
+# 6. Update MONGO_URI in environment variables
 ```
 
-### Option B: Vercel
-1. Import the repo in Vercel.
-2. Framework Preset: Vite.
-3. Root Directory: `client/`.
-4. Build Command: `npm run build` (default from Vercel preset is OK).
-5. Output Directory: `dist`.
-6. Environment Variables:
-   - VITE_API_URL: https://<render-app>/api
-   - VITE_SOCKET_URL: https://<render-app>
-7. Deploy.
+### 3. Frontend Deployment
 
-Note: SPA fallback is configured with `client/vercel.json` rewrites.
+#### Web Version (Vercel)
+```bash
+cd client
 
-## 4) Verify CORS & API
-- In the backend `.env` (or Render env), ensure `CLIENT_ORIGIN` matches your deployed frontend URL.
-- Example: `CLIENT_ORIGIN=https://nqueens-frontend.netlify.app`
-- The server enables CORS for this origin in `server/server.js`.
+# Install Vercel CLI
+npm install -g vercel
 
-## 5) Local Testing Before Deploy
-- Backend: `cd server && npm start` (http://localhost:5000)
-- Frontend: `cd client && npm run dev` (http://localhost:5173)
-- Set client `.env.local` values:
-  - `VITE_API_URL=http://localhost:5000/api`
-  - `VITE_SOCKET_URL=http://localhost:5000`
+# Login and deploy
+vercel --prod
 
-## 6) Post-Deployment Checks
-- Visit your deployed frontend URL and test:
-  - Signup/Login (JWT stored and axios Authorization header set)
-  - Leaderboard data loads
-  - Daily challenge loads
-  - Multiplayer Socket connection (optional initial test via console)
+# Set environment variables in Vercel dashboard:
+# VITE_API_URL=https://your-server-url.com/api
+# VITE_SOCKET_URL=https://your-server-url.com
+```
 
-## 7) Production Recommendations
-- Use MongoDB Atlas with Network Access/IP allowlist configured.
-- Rotate `JWT_SECRET` periodically.
-- Consider adding HTTPS-only cookies and CSRF protections if moving to cookie-based auth later.
-- Monitor Render logs and set up alerts.
+#### Web Version (Netlify)
+```bash
+cd client
 
-## 8) Troubleshooting
-- CORS errors: ensure `CLIENT_ORIGIN` exactly matches your deployed frontend origin (protocol + domain + port if any).
-- SPA 404s on refresh: ensure Netlify `_redirects` exists or Vercel rewrites are set.
-- API 404s: confirm `VITE_API_URL` and server routes.
-- Socket issues: confirm `VITE_SOCKET_URL` and server Socket.IO CORS config.
+# Build the project
+npm run build
+
+# Upload dist folder to netlify.com
+# Or connect GitHub repository for auto-deploy
+```
+
+### 4. Mobile App Deployment
+
+#### Android Deployment
+```bash
+cd client
+
+# Build production version
+npm run build
+
+# Sync with Capacitor
+npx cap sync android
+
+# Open Android Studio
+npx cap open android
+
+# In Android Studio:
+# 1. Build > Generate Signed Bundle/APK
+# 2. Create keystore or use existing
+# 3. Build release APK
+# 4. Upload to Google Play Console
+```
+
+#### iOS Deployment
+```bash
+cd client
+
+# Build production version
+npm run build
+
+# Sync with Capacitor
+npx cap sync ios
+
+# Open Xcode
+npx cap open ios
+
+# In Xcode:
+# 1. Select your team/developer account
+# 2. Set app bundle identifier
+# 3. Archive the app
+# 4. Upload to App Store Connect
+```
+
+### 5. Environment Configuration
+
+#### Production API Endpoints
+Create `client/.env.production`:
+```env
+VITE_API_URL=https://your-production-server.com/api
+VITE_SOCKET_URL=https://your-production-server.com
+VITE_APP_NAME=N-Queens Game
+VITE_APP_VERSION=1.0.0
+```
+
+#### Mobile-Specific Configuration
+Update `client/capacitor.config.ts`:
+```javascript
+import { CapacitorConfig } from '@capacitor/core';
+
+const config: CapacitorConfig = {
+  appId: 'com.yourcompany.nqueensgame',
+  appName: 'N-Queens Game',
+  webDir: 'dist',
+  server: {
+    androidScheme: 'https',
+    // Remove localhost URLs for production
+  },
+  plugins: {
+    PushNotifications: {
+      presentationOptions: ["badge", "sound", "alert"],
+    },
+  },
+};
+
+export default config;
+```
+
+### 6. App Store Preparation
+
+#### Android (Google Play)
+1. Create Google Play Developer account ($25 one-time fee)
+2. Prepare store listing:
+   - App name: "N-Queens Game"
+   - Short description: "Strategic chess-based puzzle game with multiplayer"
+   - Full description: Include features, gameplay, multiplayer
+   - Screenshots: Different board sizes, multiplayer, daily challenges
+   - Feature graphic: 1024x500px
+3. Set content rating and pricing
+4. Upload signed APK/Bundle
+5. Submit for review
+
+#### iOS (App Store)
+1. Create Apple Developer account ($99/year)
+2. Prepare App Store listing:
+   - App name: "N-Queens Game"
+   - Subtitle: "Chess Puzzle Strategy Game"
+   - Description: Include features and gameplay
+   - Keywords: chess, puzzle, strategy, multiplayer, queens
+   - Screenshots: iPhone and iPad screenshots
+   - App icon: 1024x1024px
+3. Set pricing and availability
+4. Upload via Xcode or Transporter
+5. Submit for review
+
+### 7. Push Notifications Setup
+
+#### Firebase Configuration
+```bash
+# 1. Go to console.firebase.google.com
+# 2. Create new project
+# 3. Add Android/iOS app
+# 4. Download google-services.json / GoogleService-Info.plist
+# 5. Place in respective platform folders
+# 6. Get server key for backend
+```
+
+#### Server Integration
+Add to `server/.env`:
+```env
+FIREBASE_SERVER_KEY=your-server-key-here
+FIREBASE_PROJECT_ID=your-project-id
+```
+
+### 8. Testing & Quality Assurance
+
+#### Pre-deployment Checklist
+- [ ] Server runs without errors
+- [ ] Database connection successful
+- [ ] API endpoints working
+- [ ] WebSocket multiplayer functional
+- [ ] Mobile app builds successfully
+- [ ] Push notifications working
+- [ ] App icons and splash screens configured
+- [ ] Store listings prepared
+- [ ] Privacy policy and terms created
+
+#### Performance Testing
+```bash
+# Load test server
+npm install -g artillery
+artillery quick --count 100 --num 10 https://your-server.com/health
+
+# Mobile performance
+# Test on actual devices
+# Check memory usage
+# Verify touch responsiveness
+```
+
+### 9. Monitoring & Analytics
+
+#### Server Monitoring
+```bash
+# Add to package.json dependencies
+npm install winston express-winston
+
+# Health check endpoint available at /health
+# Monitor logs in production
+```
+
+#### Mobile Analytics
+Add Firebase Analytics:
+```bash
+npm install @capacitor-community/firebase-analytics
+npx cap sync
+```
+
+### 10. Maintenance & Updates
+
+#### Backend Updates
+```bash
+# Deploy updates
+git push heroku main
+
+# Database migrations
+# Run scripts if needed
+
+# Monitor server health
+curl https://your-server.com/health
+```
+
+#### Mobile App Updates
+```bash
+# Update version in package.json and capacitor.config.ts
+# Build and deploy new version
+# Submit updates to app stores
+```
+
+## 🔧 Troubleshooting
+
+### Common Issues
+
+1. **CORS Errors**: Update CLIENT_ORIGIN in server environment
+2. **Database Connection**: Check MONGO_URI and network access
+3. **Mobile Build Fails**: Ensure all Capacitor plugins installed
+4. **Push Notifications Not Working**: Verify Firebase configuration
+5. **App Store Rejection**: Check guidelines and fix issues
+
+### Support Resources
+
+- [Capacitor Documentation](https://capacitorjs.com/docs)
+- [MongoDB Atlas Support](https://docs.atlas.mongodb.com)
+- [Google Play Console Help](https://support.google.com/googleplay/android-developer)
+- [App Store Connect Help](https://developer.apple.com/help/app-store-connect)
+
+## 🎯 Success Metrics
+
+- Server uptime > 99.5%
+- Response time < 200ms
+- Mobile app rating > 4.0
+- Daily active users
+- Multiplayer session success rate
+- App store ranking
+
+Your N-Queens Game is now ready for production deployment! 🎉

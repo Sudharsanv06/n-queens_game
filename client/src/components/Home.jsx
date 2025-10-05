@@ -2,79 +2,176 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchDailyChallenge } from '../store/slices/gameSlice';
+import { OfflineAuth } from '../utils/offlineAuth';
 import Layout from "./Layout";
 import './Home.css';
 
 const Home = () => {
   const [user, setUser] = useState(null);
   const [completedChallenges, setCompletedChallenges] = useState({});
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const dailyChallenge = useSelector((state) => state.game.dailyChallenge);
 
-  // Check and update user state
+  // Load completed challenges from localStorage (user-specific)
+  const loadCompletedChallenges = () => {
+    const currentUser = OfflineAuth.getCurrentUser();
+    if (currentUser) {
+      // Clear global contaminated data (one-time cleanup)
+      if (localStorage.getItem('completedChallenges')) {
+        console.log('Clearing contaminated global completion data');
+        localStorage.removeItem('completedChallenges');
+      }
+      
+      // Load user-specific completions (same key as GameBoard uses)
+      const userCompletions = localStorage.getItem(`userCompletions_${currentUser.id}`);
+      if (userCompletions) {
+        const completions = JSON.parse(userCompletions);
+        // Convert to the format expected by Home component
+        const displayCompletions = {};
+        Object.keys(completions).forEach(key => {
+          if (key.startsWith('level_')) {
+            displayCompletions[key] = completions[key].completedAt || completions[key];
+          }
+        });
+        setCompletedChallenges(displayCompletions);
+      } else {
+        setCompletedChallenges({});
+      }
+    } else {
+      // No user logged in, reset completions
+      setCompletedChallenges({});
+    }
+  };
+
+  // Check and update user state using OfflineAuth
   const checkUserStatus = () => {
-    const userData = localStorage.getItem('user');
-    setUser(userData ? JSON.parse(userData) : null);
+    const userData = OfflineAuth.getCurrentUser();
+    const previousUserId = user ? user.id : null;
+    const currentUserId = userData ? userData.id : null;
+    
+    // If user changed, clear previous user's data
+    if (previousUserId !== currentUserId) {
+      setCompletedChallenges({});
+      console.log('User changed, clearing completion data');
+    }
+    
+    setUser(userData);
+    
+    // Load new user's completion data
+    if (userData) {
+      setTimeout(() => loadCompletedChallenges(), 100);
+    }
+  };
+
+  // Scroll to quick challenges section
+  const scrollToQuickChallenges = () => {
+    const quickChallengesSection = document.getElementById('quick-challenges-section');
+    if (quickChallengesSection) {
+      quickChallengesSection.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    } else {
+      // If user is not logged in, redirect to login
+      navigate('/login');
+    }
   };
 
   useEffect(() => {
     // Initial check
     checkUserStatus();
 
-    // Load completed challenges from localStorage
-    const completed = localStorage.getItem('completedChallenges');
-    if (completed) {
-      setCompletedChallenges(JSON.parse(completed));
-    }
+    loadCompletedChallenges();
 
     // Set up event listeners
-    const handleStorageChange = () => checkUserStatus();
-    const handleCustomLogout = () => checkUserStatus();
+    const handleStorageChange = () => {
+      checkUserStatus();
+      loadCompletedChallenges(); // Refresh completion status on storage change
+    };
+    const handleCustomLogout = () => {
+      // Clear completions when user logs out to prevent data bleeding
+      setCompletedChallenges({});
+      checkUserStatus();
+    };
+    const handleLevelCompleted = (event) => {
+      // Refresh completion status when a level is completed
+      loadCompletedChallenges();
+      console.log(`Level ${event.detail.level} completed!`);
+    };
 
     window.addEventListener('storage', handleStorageChange);
     window.addEventListener('customLogout', handleCustomLogout);
+    window.addEventListener('levelCompleted', handleLevelCompleted);
 
     // Fetch today's daily challenge from API if authenticated
-    const token = localStorage.getItem('token');
-    if (token) {
+    if (OfflineAuth.isAuthenticated()) {
       dispatch(fetchDailyChallenge());
     }
 
     return () => {
       window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener('customLogout', handleCustomLogout);
+      window.removeEventListener('levelCompleted', handleLevelCompleted);
     };
-  }, []);
+  }, [dispatch]);
 
-  // Check if a challenge is available (24 hours cooldown)
-  const isChallengeAvailable = (day) => {
-    const lastCompleted = completedChallenges[day];
-    if (!lastCompleted) return true;
+  // Mark level as completed
+  const markLevelComplete = (level) => {
+    const currentUser = OfflineAuth.getCurrentUser();
+    if (!currentUser) return;
     
-    const now = new Date();
-    const lastCompletedDate = new Date(lastCompleted);
-    const hoursDiff = (now - lastCompletedDate) / (1000 * 60 * 60);
+    // Update UI state immediately
+    const newCompleted = { ...completedChallenges, [`level_${level}`]: new Date().toISOString() };
+    setCompletedChallenges(newCompleted);
     
-    return hoursDiff >= 24;
+    // Save ONLY to user-specific key (no global save!)
+    const userCompletions = JSON.parse(localStorage.getItem(`userCompletions_${currentUser.id}`) || '{}');
+    userCompletions[`level_${level}`] = {
+      completedAt: new Date().toISOString(),
+      points: [100, 120, 150, 180, 220, 250, 280, 300, 350, 500][parseInt(level) - 1] || 500,
+      manuallyMarked: true // Flag to indicate this was marked manually, not through GameBoard
+    };
+    localStorage.setItem(`userCompletions_${currentUser.id}`, JSON.stringify(userCompletions));
   };
 
-  // Get time until next challenge is available
-  const getTimeUntilAvailable = (day) => {
-    const lastCompleted = completedChallenges[day];
-    if (!lastCompleted) return null;
+  // Get user's current level (highest completed + 1)
+  const getCurrentLevel = () => {
+    const completedLevels = Object.keys(completedChallenges)
+      .filter(key => key.startsWith('level_'))
+      .map(key => parseInt(key.replace('level_', '')))
+      .sort((a, b) => b - a);
     
-    const now = new Date();
-    const lastCompletedDate = new Date(lastCompleted);
-    const nextAvailable = new Date(lastCompletedDate.getTime() + 24 * 60 * 60 * 1000);
-    const timeDiff = nextAvailable - now;
-    
-    if (timeDiff <= 0) return null;
-    
-    const hours = Math.floor(timeDiff / (1000 * 60 * 60));
-    const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-    
-    return `${hours}h ${minutes}m`;
+    return completedLevels.length > 0 ? completedLevels[0] + 1 : 1;
+  };
+
+  // Get user's rank based on completed levels
+  const getUserRank = () => {
+    const currentLevel = getCurrentLevel() - 1;
+    if (currentLevel >= 10) return { rank: 'Crown Master', icon: '👑', color: '#9B59B6' };
+    if (currentLevel >= 8) return { rank: 'Diamond Elite', icon: '💎', color: '#B9F2FF' };
+    if (currentLevel >= 6) return { rank: 'Gold Master', icon: '🥇', color: '#FFD700' };
+    if (currentLevel >= 4) return { rank: 'Silver Elite', icon: '🥈', color: '#C0C0C0' };
+    if (currentLevel >= 2) return { rank: 'Bronze Elite', icon: '🥉', color: '#CD7F32' };
+    return { rank: 'Rookie', icon: '🌟', color: '#4CAF50' };
+  };
+
+  // DEBUG: Clear contaminated global data
+  const clearContaminatedData = () => {
+    const confirm = window.confirm('🧹 Clear contaminated completion data?\n\nThis will remove global completions that are causing accounts to share data.\n\nClick OK to proceed.');
+    if (confirm) {
+      // Clear global contaminated data
+      if (localStorage.getItem('completedChallenges')) {
+        localStorage.removeItem('completedChallenges');
+        console.log('✅ Cleared contaminated global completedChallenges');
+      }
+      
+      // Reload user's specific data
+      loadCompletedChallenges();
+      
+      alert('✅ Contaminated data cleared!\n\nNow logout and login with different accounts - they should show separate progress.');
+    }
   };
 
   const gameModes = [
@@ -87,7 +184,6 @@ const Home = () => {
       color: '#4CAF50',
       bgColor: '#E8F5E8',
       features: ['Custom board sizes', 'Step-by-step hints', 'Solution validation', 'Leaderboard tracking'],
-      backgroundImage: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
       className: 'classic'
     },
     {
@@ -99,7 +195,6 @@ const Home = () => {
       color: '#FF9800',
       bgColor: '#FFF3E0',
       features: ['Timer countdown', 'Score multipliers', 'Global rankings', 'Speed bonuses'],
-      backgroundImage: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
       className: 'time-trial'
     },
     {
@@ -111,7 +206,6 @@ const Home = () => {
       color: '#9C27B0',
       bgColor: '#F3E5F5',
       features: ['Unique puzzle sets', 'Achievement system', 'Daily challenges', 'Progressive difficulty'],
-      backgroundImage: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
       className: 'puzzle-mode'
     },
     {
@@ -123,7 +217,6 @@ const Home = () => {
       color: '#2196F3',
       bgColor: '#E3F2FD',
       features: ['Real-time competition', 'Friend challenges', 'Tournaments', 'Live rankings'],
-      backgroundImage: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
       className: 'multiplayer'
     }
   ];
@@ -134,7 +227,7 @@ const Home = () => {
       name: '4×4 Classic', 
       difficulty: 'Beginner', 
       time: '1 min', 
-      gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      color: '#4CAF50',
       description: 'Perfect for beginners',
       className: 'size-4'
     },
@@ -143,7 +236,7 @@ const Home = () => {
       name: '6×6 Puzzle', 
       difficulty: 'Intermediate', 
       time: '3 min', 
-      gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+      color: '#FF9800',
       description: 'Step up the challenge',
       className: 'size-6'
     },
@@ -152,7 +245,7 @@ const Home = () => {
       name: '8×8 Challenge', 
       difficulty: 'Advanced', 
       time: '5 min', 
-      gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+      color: '#2196F3',
       description: 'Classic chess board',
       className: 'size-8'
     },
@@ -161,75 +254,102 @@ const Home = () => {
       name: '10×10 Expert', 
       difficulty: 'Master', 
       time: '10 min', 
-      gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+      color: '#9C27B0',
       description: 'Ultimate challenge',
       className: 'size-10'
     }
   ];
 
-  const dailyChallenges = [
+  const levelChallenges = [
     { 
-      day: 'Monday', 
+      level: 1, 
       size: 4, 
-      difficulty: 'Beginner', 
+      difficulty: 'Bronze', 
       points: 100,
-      icon: '🌟',
-      color: '#4CAF50',
-      description: 'Start your week strong'
+      icon: '🥉',
+      color: '#CD7F32',
+      description: 'Bronze Level Challenge'
     },
     { 
-      day: 'Tuesday', 
+      level: 2, 
       size: 5, 
-      difficulty: 'Beginner', 
+      difficulty: 'Bronze', 
       points: 120,
-      icon: '🔥',
-      color: '#4CAF50',
-      description: 'Keep the momentum going'
+      icon: '🥉',
+      color: '#CD7F32',
+      description: 'Bronze Advanced'
     },
     { 
-      day: 'Wednesday', 
+      level: 3, 
       size: 6, 
-      difficulty: 'Intermediate', 
+      difficulty: 'Silver', 
       points: 150,
-      icon: '⚡',
-      color: '#FF9800',
-      description: 'Midweek challenge'
+      icon: '🥈',
+      color: '#C0C0C0',
+      description: 'Silver Level Entry'
     },
     { 
-      day: 'Thursday', 
-      size: 7, 
-      difficulty: 'Intermediate', 
+      level: 4, 
+      size: 6, 
+      difficulty: 'Silver', 
       points: 180,
-      icon: '🎯',
-      color: '#FF9800',
-      description: 'Push your limits'
+      icon: '🥈',
+      color: '#C0C0C0',
+      description: 'Silver Advanced'
     },
     { 
-      day: 'Friday', 
-      size: 8, 
-      difficulty: 'Hard', 
+      level: 5, 
+      size: 7, 
+      difficulty: 'Gold', 
       points: 220,
-      icon: '💎',
-      color: '#9C27B0',
-      description: 'Friday challenge'
+      icon: '🥇',
+      color: '#FFD700',
+      description: 'Gold Level Entry'
     },
     { 
-      day: 'Saturday', 
-      size: 9, 
-      difficulty: 'Hard', 
+      level: 6, 
+      size: 8, 
+      difficulty: 'Gold', 
       points: 250,
-      icon: '🏆',
-      color: '#9C27B0',
-      description: 'Weekend warrior'
+      icon: '🥇',
+      color: '#FFD700',
+      description: 'Gold Master'
     },
     { 
-      day: 'Sunday', 
+      level: 7, 
+      size: 9, 
+      difficulty: 'Diamond', 
+      points: 280,
+      icon: '💎',
+      color: '#B9F2FF',
+      description: 'Diamond Elite'
+    },
+    { 
+      level: 8, 
       size: 10, 
-      difficulty: 'Expert', 
+      difficulty: 'Diamond', 
       points: 300,
+      icon: '💎',
+      color: '#B9F2FF',
+      description: 'Diamond Master'
+    },
+    { 
+      level: 9, 
+      size: 11, 
+      difficulty: 'Crown', 
+      points: 350,
       icon: '👑',
-      color: '#F44336',
-      description: 'Ultimate Sunday test'
+      color: '#9B59B6',
+      description: 'Royal Challenge'
+    },
+    { 
+      level: 10, 
+      size: 12, 
+      difficulty: 'Crown', 
+      points: 500,
+      icon: '👑',
+      color: '#9B59B6',
+      description: 'Ultimate Crown Master'
     }
   ];
 
@@ -260,35 +380,14 @@ const Home = () => {
     <Layout>
       <div className="home-page">
         <section className="hero-section">
-          <div className="hero-content">
-            <h1 className="hero-title">
-              <span className="title-icon">♛</span>
-              N-Queens Challenge
-            </h1>
-            <p className="hero-subtitle">
-              Master the legendary chess puzzle! Strategically place queens on the board
-              without them threatening each other. Test your logic and problem-solving skills
-              with this timeless mathematical challenge.
-            </p>
-            
-            {user ? (
-              <div className="welcome-banner">
-                <p>Welcome back, <strong>{user.name}</strong>! Ready for today's challenge?</p>
-                <div className="hero-actions">
-                  <Link to="/registered-game-modes" className="hero-btn primary">Play Games</Link>
-                  <Link to="/leaderboard" className="hero-btn secondary">View Leaderboard</Link>
-                </div>
-              </div>
-            ) : (
+            <div className="hero-content">
+              <h1>N-Queens Challenge</h1>
+              <p>Master the classic chess puzzle with strategic thinking and problem-solving skills.</p>
               <div className="hero-actions">
-                <Link to="/game-mode-selection" className="hero-btn primary">Start Free Trial</Link>
-                <Link to="/signup" className="hero-btn secondary">Sign Up to Play</Link>
-                <Link to="/login" className="hero-btn secondary">Login</Link>
+                <button onClick={scrollToQuickChallenges} className="hero-btn primary">🎮 Start Playing</button>
+                <Link to="/about" className="hero-btn secondary">Learn More</Link>
               </div>
-            )}
-          </div>
-          
-          <div className="hero-visual">
+            </div>          <div className="hero-visual">
             <div className="chess-animation">
               <div className="chess-board">
                 {[...Array(8)].map((_, row) => (
@@ -317,61 +416,40 @@ const Home = () => {
         {user && (
           <section className="daily-challenges-section">
             <div className="section-container">
-              <h2>Daily Challenges</h2>
+              <h2>Level Challenges</h2>
               <p className="section-subtitle">
-                Complete weekly challenges with progressive difficulty levels
+                Progress through 10 challenging levels from Bronze to Crown
               </p>
               
-              <div className="daily-challenges-grid">
-                {dailyChallenges.map((challenge, index) => {
-                  const isAvailable = isChallengeAvailable(challenge.day);
-                  const timeUntilAvailable = getTimeUntilAvailable(challenge.day);
+              <div className="level-challenges-grid">
+                {levelChallenges.map((challenge, index) => {
+                  const isCompleted = completedChallenges[`level_${challenge.level}`];
                   
                   return (
                     <div 
-                      key={challenge.day} 
-                      className={`daily-challenge-card ${!isAvailable ? 'disabled' : ''}`}
+                      key={challenge.level} 
+                      className={`level-challenge-card ${isCompleted ? 'completed' : ''}`}
                     >
-                      {isAvailable ? (
-                        <Link 
-                          to={`/game/daily?day=${challenge.day.toLowerCase()}&size=${challenge.size}`} 
-                          className="challenge-link"
-                        >
-                          <div className="challenge-header">
-                            <div className="challenge-icon" style={{ color: challenge.color }}>
-                              {challenge.icon}
-                            </div>
-                            <div className="challenge-day">{challenge.day}</div>
+                      <Link 
+                        to={`/game/classic?mode=level&level=${challenge.level}&size=${challenge.size}`} 
+                        className="challenge-link"
+                      >
+                        <div className="challenge-header">
+                          <div className="challenge-icon" style={{ color: challenge.color }}>
+                            {challenge.icon}
                           </div>
-                          <div className="challenge-content">
-                            <div className="challenge-size">{challenge.size}×{challenge.size}</div>
-                            <div className="challenge-difficulty" style={{ backgroundColor: challenge.color }}>
-                              {challenge.difficulty}
-                            </div>
-                            <div className="challenge-description">{challenge.description}</div>
-                            <div className="challenge-points">+{challenge.points} pts</div>
-                          </div>
-                        </Link>
-                      ) : (
-                        <div className="challenge-disabled">
-                          <div className="challenge-header disabled">
-                            <div className="challenge-icon" style={{ color: '#ccc' }}>
-                              {challenge.icon}
-                            </div>
-                            <div className="challenge-day">{challenge.day}</div>
-                          </div>
-                          <div className="challenge-content">
-                            <div className="challenge-size">{challenge.size}×{challenge.size}</div>
-                            <div className="challenge-difficulty" style={{ backgroundColor: '#ccc' }}>
-                              {challenge.difficulty}
-                            </div>
-                            <div className="challenge-description">Completed</div>
-                            <div className="challenge-cooldown">
-                              Available in: {timeUntilAvailable}
-                            </div>
-                          </div>
+                          <div className="challenge-level">Level {challenge.level}</div>
+                          {isCompleted && <div className="completion-check">✅</div>}
                         </div>
-                      )}
+                        <div className="challenge-content">
+                          <div className="challenge-size">{challenge.size}×{challenge.size}</div>
+                          <div className="challenge-difficulty" style={{ backgroundColor: challenge.color, color: '#fff' }}>
+                            {challenge.difficulty}
+                          </div>
+                          <div className="challenge-description">{challenge.description}</div>
+                          <div className="challenge-points">+{challenge.points} pts</div>
+                        </div>
+                      </Link>
                     </div>
                   );
                 })}
@@ -381,7 +459,7 @@ const Home = () => {
         )}
 
         {user && (
-          <section className="quick-games-section">
+          <section id="quick-challenges-section" className="quick-games-section">
             <div className="section-container">
               <h2>Quick Start Challenges</h2>
               <p className="section-subtitle">
@@ -395,7 +473,7 @@ const Home = () => {
                     to={`/game/classic?size=${game.size}`} 
                     className="quick-game-card"
                   >
-                    <div className={`game-image-container ${game.className}`}>
+                    <div className="game-image-container" style={{ backgroundColor: game.color }}>
                       <div className="game-overlay">
                         <div className="game-size">{game.size}×{game.size}</div>
                         <div className="game-description">{game.description}</div>
@@ -404,7 +482,7 @@ const Home = () => {
                     <div className="game-info">
                       <h3>{game.name}</h3>
                       <div className="game-meta">
-                        <span className="difficulty-badge">
+                        <span className="difficulty-badge" style={{ backgroundColor: game.color }}>
                           {game.difficulty}
                         </span>
                         <span className="time-estimate">{game.time}</span>
@@ -426,29 +504,29 @@ const Home = () => {
               <div className="game-modes-grid">
                 {gameModes.map((mode) => (
                   <div key={mode.id} className="game-mode-card">
-                    <div className={`mode-image-container ${mode.className}`}>
-                      <div className="mode-overlay"></div>
+                    <div className="mode-image-container" style={{ backgroundColor: mode.color }}>
                       <div className="mode-icon">{mode.icon}</div>
                       <h3 className="mode-title">{mode.name}</h3>
                     </div>
                     <div className="mode-content">
                       <p className="mode-description">{mode.description}</p>
                       <div className="mode-details">
-                        <span className="difficulty">
+                        <span className="difficulty" style={{ backgroundColor: mode.color }}>
                           {mode.difficulty}
                         </span>
                       </div>
                       <ul className="mode-features">
                         {mode.features.map((feature, index) => (
                           <li key={index}>
-                            <span className="feature-icon">✓</span>
+                            <span className="feature-icon" style={{ color: mode.color }}>✓</span>
                             {feature}
                           </li>
                         ))}
                       </ul>
                       <Link 
-                        to={`/game/${mode.id}`} 
+                        to={`/game/${mode.id}?size=8`} 
                         className="play-mode-btn"
+                        style={{ backgroundColor: mode.color }}
                       >
                         Play {mode.name.split(' ')[0]}
                       </Link>
@@ -464,10 +542,32 @@ const Home = () => {
           <div className="section-container">
             <div className="stats-grid">
               {stats.map((stat, index) => (
-                <div key={index} className="stat-card">
-                  <div className="stat-icon">{stat.icon}</div>
-                  <div className="stat-number">{stat.value}</div>
-                  <div className="stat-label">{stat.label}</div>
+                <div key={index} className="stat-card" style={{ 
+                  backgroundColor: '#ffffff', 
+                  color: '#000000',
+                  border: '2px solid #ddd',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                  borderRadius: '12px'
+                }}>
+                  <div className="stat-icon" style={{ 
+                    fontSize: '2.5rem', 
+                    color: '#000000', 
+                    marginBottom: '12px' 
+                  }}>{stat.icon}</div>
+                  <div className="stat-number" style={{ 
+                    color: '#000000', 
+                    fontWeight: '900',
+                    fontSize: '2.2rem',
+                    marginBottom: '8px',
+                    lineHeight: '1'
+                  }}>{stat.value}</div>
+                  <div className="stat-label" style={{ 
+                    color: '#000000',
+                    fontSize: '1rem',
+                    fontWeight: '700',
+                    textTransform: 'uppercase',
+                    letterSpacing: '1px'
+                  }}>{stat.label}</div>
                 </div>
               ))}
             </div>
