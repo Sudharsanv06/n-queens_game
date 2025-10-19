@@ -1,4 +1,4 @@
-# 🚨 Deployment Troubleshooting Guide
+![alt text](image.png)# 🚨 Deployment Troubleshooting Guide
 
 ## 🔍 Quick Problem Solver
 
