@@ -1,0 +1,59 @@
+📱 **INSTANT MOBILE ACCESS - FOLLOW THESE STEPS:**
+
+## 🎯 **Quick Mobile Testing (Ready Now!)**
+
+### ✅ **Your servers are already running:**
+- Frontend: http://172.18.99.145:5173
+- Backend: http://localhost:5000
+
+### 📱 **To play on your mobile RIGHT NOW:**
+
+1. **Connect your phone to the SAME WiFi** as your computer
+
+2. **Open any browser on your phone** (Chrome, Safari, Firefox)
+
+3. **Type this URL in your phone's browser:**
+   ```
+   http://172.18.99.145:5173
+   ```
+
+4. **That's it!** The N-Queens game will load on your mobile device!
+
+### 🏠 **Make it feel like a real app:**
+- **iPhone**: Tap Share button → "Add to Home Screen"
+- **Android**: Tap menu (⋮) → "Add to home screen"
+
+---
+
+## 📦 **For Native App Installation (APK):**
+
+### **Step 1: Build APK**
+```bash
+cd client
+npm run build
+npx cap open android
+```
+
+### **Step 2: In Android Studio**
+1. Wait for Android Studio to open
+2. Click **Build** → **Build Bundle(s)/APK(s)** → **Build APK(s)**
+3. Wait for build to complete
+4. Click **"locate"** to find your APK file
+
+### **Step 3: Install on Phone**
+1. Copy the APK file to your phone (USB/email/cloud)
+2. Enable "Install from unknown sources" in phone settings
+3. Tap the APK file to install
+4. Your N-Queens game is now a native Android app!
+
+---
+
+## 🔧 **Troubleshooting:**
+
+**If the URL doesn't work on your phone:**
+1. Make sure both devices are on the same WiFi
+2. Try: `http://localhost:5173` (if on same computer)
+3. Check Windows Firewall settings
+4. Try restarting both servers
+
+**Current Status:** ✅ Ready to play!

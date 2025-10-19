@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>N-Queens Deployment Status Checker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        input[type="url"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="url"]:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 20px;
+            transition: transform 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .results {
+            margin-top: 30px;
+        }
+
+        .test-item {
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border-left: 5px solid #ddd;
+            background: #f9f9f9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .test-item.pending {
+            border-left-color: #ff9800;
+            background: #fff3e0;
+        }
+
+        .test-item.success {
+            border-left-color: #4CAF50;
+            background: #e8f5e8;
+        }
+
+        .test-item.error {
+            border-left-color: #f44336;
+            background: #ffebee;
+        }
+
+        .test-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .test-description {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .test-status {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .success { color: #4CAF50; }
+        .error { color: #f44336; }
+        .pending { color: #ff9800; }
+
+        .test-details {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+        }
+
+        .overall-status {
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 30px;
+        }
+
+        .overall-status.success {
+            background: #e8f5e8;
+            color: #2e7d32;
+            border: 2px solid #4CAF50;
+        }
+
+        .overall-status.error {
+            background: #ffebee;
+            color: #c62828;
+            border: 2px solid #f44336;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #ff9800;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .note {
+            background: #e3f2fd;
+            border: 1px solid #2196F3;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .note strong {
+            color: #1976D2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏰 N-Queens Deployment Checker</h1>
+            <p>Verify your deployment is working correctly</p>
+        </div>
+
+        <div class="content">
+            <div class="input-group">
+                <label for="backendUrl">Backend URL (Railway):</label>
+                <input type="url" id="backendUrl" placeholder="https://yourapp-production-xxxx.up.railway.app" />
+            </div>
+
+            <div class="input-group">
+                <label for="frontendUrl">Frontend URL (Vercel):</label>
+                <input type="url" id="frontendUrl" placeholder="https://your-nqueens-game.vercel.app" />
+            </div>
+
+            <button class="btn" onclick="runTests()">🔍 Check Deployment Status</button>
+
+            <div class="results" id="results" style="display: none;">
+                <h3>Test Results:</h3>
+                
+                <div class="test-item pending" id="test-backend-health">
+                    <div>
+                        <div class="test-name">Backend Health Check</div>
+                        <div class="test-description">Checking if backend server is running</div>
+                    </div>
+                    <div class="test-status pending">⏳</div>
+                </div>
+
+                <div class="test-item pending" id="test-database">
+                    <div>
+                        <div class="test-name">Database Connection</div>
+                        <div class="test-description">Verifying MongoDB Atlas connection</div>
+                    </div>
+                    <div class="test-status pending">⏳</div>
+                </div>
+
+                <div class="test-item pending" id="test-cors">
+                    <div>
+                        <div class="test-name">CORS Configuration</div>
+                        <div class="test-description">Testing cross-origin requests</div>
+                    </div>
+                    <div class="test-status pending">⏳</div>
+                </div>
+
+                <div class="test-item pending" id="test-frontend">
+                    <div>
+                        <div class="test-name">Frontend Loading</div>
+                        <div class="test-description">Checking if frontend loads correctly</div>
+                    </div>
+                    <div class="test-status pending">⏳</div>
+                </div>
+
+                <div class="test-item pending" id="test-api">
+                    <div>
+                        <div class="test-name">API Endpoints</div>
+                        <div class="test-description">Testing authentication endpoints</div>
+                    </div>
+                    <div class="test-status pending">⏳</div>
+                </div>
+
+                <div class="overall-status" id="overall-status" style="display: none;">
+                </div>
+            </div>
+
+            <div class="note">
+                <strong>📝 Note:</strong> This tool helps you verify that your deployment is working correctly. 
+                If any tests fail, check the <strong>TROUBLESHOOTING_GUIDE.md</strong> for solutions.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let testResults = {};
+
+        async function runTests() {
+            const backendUrl = document.getElementById('backendUrl').value.trim();
+            const frontendUrl = document.getElementById('frontendUrl').value.trim();
+
+            if (!backendUrl || !frontendUrl) {
+                alert('Please enter both Backend URL and Frontend URL');
+                return;
+            }
+
+            // Show results section
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('overall-status').style.display = 'none';
+
+            // Reset all tests to pending
+            const tests = ['backend-health', 'database', 'cors', 'frontend', 'api'];
+            tests.forEach(test => {
+                const element = document.getElementById(`test-${test}`);
+                element.className = 'test-item pending';
+                element.querySelector('.test-status').innerHTML = '<div class="spinner"></div>';
+                
+                // Remove any existing details
+                const existingDetails = element.querySelector('.test-details');
+                if (existingDetails) {
+                    existingDetails.remove();
+                }
+            });
+
+            testResults = {};
+
+            // Run tests
+            await testBackendHealth(backendUrl);
+            await testDatabase(backendUrl);
+            await testCORS(backendUrl, frontendUrl);
+            await testFrontend(frontendUrl);
+            await testAPI(backendUrl);
+
+            // Show overall status
+            showOverallStatus();
+        }
+
+        async function testBackendHealth(backendUrl) {
+            try {
+                const response = await fetch(`${backendUrl}/health`, {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setTestResult('backend-health', true, `Status: ${data.status}`);
+                    testResults.health = data;
+                } else {
+                    setTestResult('backend-health', false, `HTTP ${response.status}: ${response.statusText}`);
+                }
+            } catch (error) {
+                setTestResult('backend-health', false, `Error: ${error.message}`);
+            }
+        }
+
+        async function testDatabase(backendUrl) {
+            if (testResults.health && testResults.health.database === 'Connected') {
+                setTestResult('database', true, 'Database connected successfully');
+            } else if (testResults.health) {
+                setTestResult('database', false, `Database status: ${testResults.health.database}`);
+            } else {
+                setTestResult('database', false, 'Could not check database status (health check failed)');
+            }
+        }
+
+        async function testCORS(backendUrl, frontendUrl) {
+            try {
+                // Create a test request to check CORS
+                const response = await fetch(`${backendUrl}/health`, {
+                    method: 'GET',
+                    headers: {
+                        'Origin': frontendUrl,
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    setTestResult('cors', true, 'CORS configured correctly');
+                } else {
+                    setTestResult('cors', false, `CORS test failed: HTTP ${response.status}`);
+                }
+            } catch (error) {
+                if (error.message.includes('CORS')) {
+                    setTestResult('cors', false, 'CORS error detected - check CLIENT_ORIGIN in Railway');
+                } else {
+                    setTestResult('cors', false, `Error: ${error.message}`);
+                }
+            }
+        }
+
+        async function testFrontend(frontendUrl) {
+            try {
+                const response = await fetch(frontendUrl, {
+                    method: 'GET',
+                    headers: { 'Accept': 'text/html' }
+                });
+
+                if (response.ok) {
+                    setTestResult('frontend', true, 'Frontend loads successfully');
+                } else {
+                    setTestResult('frontend', false, `HTTP ${response.status}: ${response.statusText}`);
+                }
+            } catch (error) {
+                setTestResult('frontend', false, `Error: ${error.message}`);
+            }
+        }
+
+        async function testAPI(backendUrl) {
+            try {
+                // Test auth endpoint
+                const response = await fetch(`${backendUrl}/api/auth/signup`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: 'test',
+                        email: 'test@example.com',
+                        password: 'test123',
+                        mobile: '1234567890'
+                    })
+                });
+
+                // We expect this to fail (user might exist) but not with CORS or server errors
+                if (response.status === 400 || response.status === 409) {
+                    setTestResult('api', true, 'API endpoints accessible (expected validation error)');
+                } else if (response.status === 201) {
+                    setTestResult('api', true, 'API endpoints working (test user created)');
+                } else if (response.status === 500) {
+                    setTestResult('api', false, 'Server error - check backend logs');
+                } else {
+                    setTestResult('api', false, `Unexpected response: HTTP ${response.status}`);
+                }
+            } catch (error) {
+                if (error.message.includes('CORS')) {
+                    setTestResult('api', false, 'CORS error on API calls');
+                } else {
+                    setTestResult('api', false, `Error: ${error.message}`);
+                }
+            }
+        }
+
+        function setTestResult(testName, success, details) {
+            const element = document.getElementById(`test-${testName}`);
+            element.className = `test-item ${success ? 'success' : 'error'}`;
+            element.querySelector('.test-status').innerHTML = success ? '✅' : '❌';
+            
+            // Add details
+            const detailsElement = document.createElement('div');
+            detailsElement.className = 'test-details';
+            detailsElement.textContent = details;
+            element.appendChild(detailsElement);
+
+            testResults[testName] = success;
+        }
+
+        function showOverallStatus() {
+            const allTests = ['backend-health', 'database', 'cors', 'frontend', 'api'];
+            const passedTests = allTests.filter(test => testResults[test] === true);
+            const totalTests = allTests.length;
+
+            const overallElement = document.getElementById('overall-status');
+            overallElement.style.display = 'block';
+
+            if (passedTests.length === totalTests) {
+                overallElement.className = 'overall-status success';
+                overallElement.innerHTML = '🎉 All tests passed! Your deployment is working correctly! 🎉';
+            } else {
+                overallElement.className = 'overall-status error';
+                overallElement.innerHTML = `❌ ${passedTests.length}/${totalTests} tests passed. Check the TROUBLESHOOTING_GUIDE.md for help fixing the failed tests.`;
+            }
+        }
+
+        // Auto-fill URLs if they exist in localStorage
+        window.onload = function() {
+            const savedBackendUrl = localStorage.getItem('nqueens-backend-url');
+            const savedFrontendUrl = localStorage.getItem('nqueens-frontend-url');
+            
+            if (savedBackendUrl) document.getElementById('backendUrl').value = savedBackendUrl;
+            if (savedFrontendUrl) document.getElementById('frontendUrl').value = savedFrontendUrl;
+        };
+
+        // Save URLs to localStorage when they change
+        document.getElementById('backendUrl').addEventListener('change', function() {
+            localStorage.setItem('nqueens-backend-url', this.value);
+        });
+
+        document.getElementById('frontendUrl').addEventListener('change', function() {
+            localStorage.setItem('nqueens-frontend-url', this.value);
+        });
+    </script>
+</body>
+</html>
