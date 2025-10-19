@@ -1,0 +1,7 @@
+# Build files
+node_modules
+.DS_Store
+*.log
+dist
+
+# Force fresh deployment - remove terser dependency conflicts
