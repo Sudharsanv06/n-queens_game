@@ -39,13 +39,7 @@ export default defineConfig({
       }
     },
     chunkSizeWarningLimit: 1000, // Increase limit to 1000kB
-    target: 'esnext',
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true, // Remove console.log in production
-        drop_debugger: true
-      }
-    }
+    target: 'es2020', // More compatible target
+    minify: 'esbuild' // Use esbuild instead of terser for better Vercel compatibility
   }
 })
