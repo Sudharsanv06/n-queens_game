@@ -25,17 +25,14 @@ import RegisteredGameModes from './RegisteredGameModes'
 
 // Import CSS
 import '../index.css'
-import '../styles.css'
-import './MobileGameBoard.css'
-import './MultiplayerGame.css'
-import './DailyChallenge.css'
 
 const App = () => {
   const [isOfflineMode, setIsOfflineMode] = useState(false)
   const [appInitialized, setAppInitialized] = useState(false)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
-    const initializeApp = () => {
+    const initializeApp = async () => {
       try {
         console.log('Initializing N-Queens Game...')
         
@@ -69,22 +66,53 @@ const App = () => {
         console.log('App initialization complete')
       } catch (error) {
         console.error('App initialization error:', error)
+        setError(error.message)
         // Always allow app to load
         setAppInitialized(true)
       }
     }
 
-    // Don't use async - keep it simple
     initializeApp()
   }, [])
 
-  // Remove complex game component logic - handled in GameRoute
+  // Show error if initialization failed
+  if (error) {
+    return (
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+        background: '#f3f7ee',
+        padding: '20px',
+        textAlign: 'center'
+      }}>
+        <h1 style={{ color: '#dc2626', marginBottom: '20px' }}>N-Queens Game</h1>
+        <p style={{ color: '#374151', marginBottom: '20px' }}>Error during initialization: {error}</p>
+        <button 
+          onClick={() => window.location.reload()} 
+          style={{
+            background: '#16a34a',
+            color: 'white',
+            border: 'none',
+            padding: '10px 20px',
+            borderRadius: '5px',
+            cursor: 'pointer'
+          }}
+        >
+          Reload App
+        </button>
+      </div>
+    )
+  }
 
   // Show loading screen while initializing
   if (!appInitialized) {
     return (
       <div style={{
         display: 'flex',
+        flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
         height: '100vh',
@@ -92,7 +120,8 @@ const App = () => {
         fontSize: '18px',
         color: '#0d0d0d'
       }}>
-        Loading N-Queens Game...
+        <div style={{ marginBottom: '20px' }}>Loading N-Queens Game...</div>
+        <div style={{ fontSize: '14px', color: '#666' }}>If this takes too long, please refresh the page.</div>
       </div>
     )
   }
