@@ -19,7 +19,7 @@ export default defineConfig({
           // UI libraries
           ui: ['@headlessui/react', '@heroicons/react', 'framer-motion'],
           // Utility libraries
-          utils: ['axios', 'clsx', 'tailwind-merge', 'class-variance-authority'],
+          utils: ['axios', 'clsx', 'tailwind-merge', 'class-variance-authority', 'react-hot-toast'],
           // Socket and capacitor
           socket: ['socket.io-client'],
           capacitor: [
@@ -33,13 +33,11 @@ export default defineConfig({
             '@capacitor/splash-screen',
             '@capacitor/status-bar'
           ],
-          // Icons and other UI components
-          icons: ['lucide-react', 'react-hot-toast']
+          // Icons
+          icons: ['lucide-react']
         }
       }
     },
-    chunkSizeWarningLimit: 1000, // Increase limit to 1000kB
-    target: 'es2020', // More compatible target
-    minify: 'esbuild' // Use esbuild instead of terser for better Vercel compatibility
+    chunkSizeWarningLimit: 1000
   }
 })
