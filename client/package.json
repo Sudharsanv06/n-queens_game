@@ -3,8 +3,9 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "build": "npx vite build",
+    "preview": "vite preview",
+    "vercel-build": "npx vite build"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.3",
